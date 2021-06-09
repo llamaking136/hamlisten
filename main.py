@@ -105,6 +105,9 @@ hard_callsigns = "".join(phonetics.keys())#med_callsigns + "fghjklmnpqvz9"
 hard_length    = (4, 6)
 hard_delay     = 0
 
+right = 0
+wrong = 0
+
 def startup():
     print("Welcome to HAM Listen! This game will try to help you advance")
     print("in listening to callsigns on-the-fly.")
@@ -114,7 +117,7 @@ def startup():
     print("You can press Control-C at any time to stop the program.")
 
 def main():
-    global phonetic, mode
+    global phonetic, mode, right, wrong
     while True:
         print("Saying callsign...")
         callsign_base, length, delay = get_callsign_based_on_mode(mode)
@@ -132,10 +135,17 @@ def main():
         callsign_heard = input("> ")
         if callsign_heard != callsign:
             print("Whoops! Looks like you didn't get this one. The callsign was " + callsign + ".")
+            wrong += 1
         else:
             print("Congrats, you got it right!")
+            right += 1
         print("Press return to continue...")
         input()
+
+def display_stats():
+    score = round((right / (wrong + right)) * 100, 2)
+    print("\nOut of %d questions, you got %d right." % (wrong + right, right))
+    print("You had total a score of " + str(score) + "%.")
 
 startup()
 print("Now, please input mode (e: easy, m: medium, h: hard).")
@@ -173,5 +183,5 @@ while True:
 try:
     main()
 except (KeyboardInterrupt, EOFError):
+    display_stats()
     exit(0)
-
